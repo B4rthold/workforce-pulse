@@ -1,0 +1,274 @@
+Workforce Pulse — Full ProjectHackathon: World Wide Vibes Hackathon 2 (GenAI / vibe coding)
+Working title: Workforce Pulse
+Region focus: Montgomery job market
+Core sponsor pain point: Public services (Police / Firefighters / EMS) are critically understaffed and struggling to recruit.
+Goal: Bridge the gap by making workforce intelligence accessible, actionable, and collaborative.
+
+1) Executive summary
+
+Workforce Pulse is a civic workforce intelligence dashboard that scrapes job postings and translates them into:
+
+* Hiring trends (what roles are accelerating or cooling)
+* In-demand skills (what capabilities employers are asking for)
+* Training needs (what skills are missing or not mapped to training)
+
+The product is intentionally designed to be usable by non-analysts in under 60 seconds, with a default emphasis on critical public safety roles.
+
+2) Canonical purpose statement
+
+Workforce Pulse is a dashboard that scrapes job postings and surfaces hiring trends, in-demand skills, and training needs for the Montgomery job market. The key sponsor pain point is that public services like police and firefighters are critically understaffed and struggling to recruit. Workforce Pulse helps bridge that gap by turning workforce signals into clear actions that teams can share and track.
+
+3) Product promise (the 60-second loop)
+
+In under a minute, users should answer:
+
+1. What’s changing? → Daily Pulse
+2. What’s driving it? → Roles + skills drivers
+3. What should we do next? → Missions / recommended actions
+4. Who owns it + how are we tracking it? → Playbooks
+
+This loop should be the main demo flow.
+
+4) Target users and core jobs-to-be-done
+
+Primary persona (MVP)
+
+* City workforce / HR leaders
+* Department leads (Public Safety)
+* Education / training partners (secondary)
+
+Jobs-to-be-done
+
+* Detect early staffing pressure signals for critical roles
+* Identify which skills are newly required or rising fast
+* Translate demand into training programs or recruitment actions
+* Coordinate and share a plan across stakeholders
+
+
+5) MVP scope (what we’re building)
+
+Must-have screens
+
+1. Daily Pulse (Home)
+
+* Critical roles tile (Police/Fire/EMS highlighted)
+* Fastest-rising skills tile
+* Training needs tile (unmapped high-demand skills)
+* Sector strip with Impact Score + trend
+
+1. Sector Detail (Public Safety first)
+
+* Impact Score dial + drivers
+* Hiring trend chart
+* Critical roles list
+* Top skills chips
+* Training mapping list
+* Missions preview
+* Playbooks preview
+
+1. Skills Explorer
+
+* Search skills
+* Show sectors/roles demanding them
+* Map skills to training items
+
+1. Missions
+
+* Checklist-based actions + ownership
+* Progress bars (simple)
+
+1. Playbooks (light social)
+
+* Shareable insight + action plan
+* Owner + status
+* Reactions and templated comments
+
+Nice-to-have (if time)
+
+* Role detail pages
+* Export snapshot as a clean card/PDF
+* Improved skill extraction with an LLM + canonicalization
+
+Out-of-scope (for hackathon)
+
+* Forecasting / heavy ML
+* Full candidate pipeline integration
+* Complex social network features
+
+
+6) UX direction (Civic-modern)
+
+Design goals: friendly, clean, low cognitive load, civic-appropriate.
+
+* Card-first layout
+* Plain language labels (e.g., “Demand pressure”, “Training gap”, “Critical pressure”)
+* Public Safety is always visible and prioritized
+* Every insight has an adjacent action CTA
+
+
+7) Gamification (serious, impact-oriented)
+
+Impact Score (0–100)
+
+Purpose: compress signals into a single prioritization dial.
+MVP inputs (derivable from job postings):
+
+* Demand pressure (posting volume + growth)
+* Criticality boost (Public Safety weighted)
+* Skill volatility (how top skills change over time)
+* Training gap proxy (unmapped high-demand skill mentions)
+
+This is not “gambling dopamine.” It’s an operational clarity tool.
+
+Missions
+
+Example mission templates:
+
+* Map Top Skills to Training: map top 10 skills to training items
+* Publish Weekly Playbook: create 1 action plan/week for Public Safety
+* Reduce Training Gap: bring “unmapped skills” from N → M
+
+
+8) Social layer (Playbooks)
+
+A Playbook is a structured, shareable card:
+
+* What we’re seeing (evidence-based summary)
+* Why it matters (impact)
+* Recommended actions (3–5 steps)
+* Owner + status (Draft / Active / Done)
+* Lightweight reactions: 👍 📌
+* Comments restricted to templates in MVP (moderation-friendly)
+
+
+9) Data pipeline overview
+
+9.1 Sources
+
+Keep scope tight: 2–4 sources max.
+
+* General job boards relevant to Montgomery
+* Optional: official city/agency careers pages (if accessible)
+
+9.2 Ingestion cadence
+
+* Daily incremental scrape (new postings only)
+* Weekly aggregation into snapshots powering the UI
+
+9.3 Processing steps
+
+1. Fetch postings
+2. Dedupe
+3. Normalize org/location
+4. Role classification (rules first)
+5. Skill extraction (dictionary/rules first)
+6. Aggregate metrics per sector/role/week
+7. Store PulseSnapshots + Impact Score
+
+
+10) Bright Data usage (and cost control)
+
+We have a paid Bright Data API with up to $500 credit.
+Guidelines:
+
+* Cache responses, dedupe aggressively
+* Re-scrape only when listings change
+* Rate limits per source
+* Prefer incremental updates to full refresh
+* Track “cost per new posting” as a sanity metric
+
+
+11) Data model (minimum viable)
+
+Entities
+
+* JobPosting: id, title, org, location, posted_date, description, source, url, sector_id (inferred), role_id (inferred)
+* Sector: id, name (Public Safety, Healthcare, Construction, IT, etc.)
+* Role: id, name, critical_flag
+* Skill: id, canonical_name
+* PostingSkill: posting_id, skill_id, confidence/weight
+* TrainingItem: id, title, url, skill_ids[]
+* PulseSnapshot: sector_id, week_start, metrics_json, impact_score
+* Mission: id, sector_id, template_id, targets_json, progress
+* Playbook: id, sector_id, title, insights[], actions[], owner, status, reactions_count
+
+
+12) API endpoints (MVP)
+
+* GET /pulse/daily → alert + tiles data + sector strip
+* GET /sectors → list + impact scores + deltas
+* GET /sectors/:id → snapshot + trends + skills + training gap
+* GET /skills?query= → skill search
+* GET /skills/:id → skill detail (roles/sectors, trend)
+* GET /missions → mission list
+* POST /missions/:id/complete-step → update progress
+* GET /playbooks → feed
+* POST /playbooks → create
+* POST /playbooks/:id/react → reactions
+
+
+13) Implementation plan (thin-slice first)
+
+Recommended build order
+
+1. Daily Pulse UI reading static/mock API
+2. Ingestion + dedupe + store postings
+3. Weekly PulseSnapshot + Impact Score
+4. Sector Detail reads real snapshot
+5. Missions (checklist progress stored)
+6. Playbooks (create/publish)
+7. Skills Explorer (search + mapping)
+
+
+14) Team roles
+
+* Erik Cardoso — Frontend + Product
+    * IA/UX, wireframes, UI components, prototype, product specs
+* Backend Dev A — Ingestion
+* Backend Dev B — Skill/role extraction
+* Backend Dev C — Analytics API + aggregation
+* Bart — Coordination + project ops
+
+
+15) Demo script (2 minutes)
+
+1. Open Daily Pulse → show Public Safety alert + critical roles tile
+2. Click Public Safety → show Impact Score + what’s driving it
+3. Open Missions → “Map Top Skills to Training” and complete one step
+4. Create a Playbook from sector insights → publish
+5. Show Playbooks feed and how it supports coordination
+
+
+16) Communication norms (Slack)
+
+* English only
+* Keep updates structured:
+    * Update:
+    * Blocker:
+    * Next:
+* Use threads for deep technical discussions
+
+
+17) Contribution workflow
+
+1. Choose a track (Ingestion / Extraction / Analytics API / Frontend / Demo)
+2. Create a small ticket with acceptance criteria
+3. Ship a thin slice end-to-end
+4. Share a screenshot + endpoint/test note in Slack
+
+
+18) Links (fill in)
+
+* Repo:
+* Design (Figma / Stitch / Adobe):
+* API docs (OpenAPI/Postman):
+* Data storage:
+* Demo URL:
+
+
+19) Open questions (parking lot)
+
+* Which 2–4 job sources provide the best signal for Montgomery + Public Safety?
+* What thresholds define “Critical pressure” for alerts?
+* Do we include a list of local training providers in MVP or just placeholders/links?
+* What is the simplest, ethical way to represent public safety staffing signals?

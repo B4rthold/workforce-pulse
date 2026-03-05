@@ -2,26 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .card-shadow {
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  .tile-critical {
+    background: linear-gradient(135deg, hsl(0 84% 60% / 0.08) 0%, hsl(0 84% 60% / 0.02) 100%);
+    border-left: 3px solid hsl(0 84% 60%);
+  }
+  .tile-watch {
+    background: linear-gradient(135deg, hsl(36 44% 50% / 0.08) 0%, hsl(36 44% 50% / 0.02) 100%);
+    border-left: 3px solid hsl(36 44% 50%);
+  }
+  .tile-accent {
+    background: linear-gradient(135deg, hsl(205 100% 29% / 0.06) 0%, hsl(205 100% 29% / 0.01) 100%);
+    border-left: 3px solid hsl(205 100% 29%);
+  }
+  .animate-stagger-1 { animation-delay: 0.05s; }
+  .animate-stagger-2 { animation-delay: 0.1s; }
+  .animate-stagger-3 { animation-delay: 0.15s; }
+  .animate-stagger-4 { animation-delay: 0.2s; }
+  .animate-stagger-5 { animation-delay: 0.25s; }
+}
+
+
+
+@layer base {
+  :root {
+    --background: 0 0% 97%;           /* #f7f7f7 off-white page bg */
+    --foreground: 0 0% 20%;           /* #343434 body text */
+    --card: 0 0% 100%;                /* white cards on off-white bg */
+    --card-foreground: 0 0% 20%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 20%;
+    --primary: 205 100% 29%;          /* #005e95 primary navy */
+    --primary-foreground: 0 0% 98%;
+    --secondary: 36 44% 50%;          /* #b98646 gold */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 91%;                /* #e7e7e7 subtle bg / dividers */
+    --muted-foreground: 0 0% 45%;
+    --accent: 210 80% 41%;            /* #136fbf link/hover blue */
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 87%;
+    --input: 0 0% 87%;
+    --ring: 205 100% 29%;             /* focus ring = primary navy */
+    --chart-1: 205 100% 29%;          /* navy */
+    --chart-2: 36 44% 50%;            /* gold */
+    --chart-3: 210 80% 41%;           /* link blue */
+    --chart-4: 204 93% 22%;           /* deep navy */
+    --chart-5: 27 87% 67%;            /* warm orange */
+    --radius: 0.625rem;               /* 10px */
+  }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
